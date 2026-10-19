@@ -1,0 +1,334 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Surprise for Kathzy 💜</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+  color: white;
+  background: radial-gradient(circle at top, #542477, #160c2c 60%, #070410);
+  overflow-x: hidden;
+}
+
+canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 16px;
+  position: relative;
+  z-index: 1;
+}
+
+.card {
+  width: 100%;
+  max-width: 500px;
+  padding: 35px 23px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 28px;
+  background: rgba(255,255,255,.08);
+  box-shadow: 0 0 40px rgba(219,120,255,.18);
+  backdrop-filter: blur(8px);
+}
+
+.emoji {
+  font-size: 65px;
+  animation: float 2s ease-in-out infinite;
+}
+
+h1 {
+  font-size: clamp(30px, 8vw, 43px);
+  color: #ffd6fa;
+  text-shadow: 0 0 18px #ed70ff;
+  line-height: 1.2;
+}
+
+p {
+  color: #f2e4ff;
+  line-height: 1.8;
+}
+
+button {
+  border: none;
+  border-radius: 50px;
+  padding: 16px 25px;
+  margin-top: 15px;
+  background: linear-gradient(135deg, #ffb3e6, #d7a6ff);
+  color: #351344;
+  font-weight: bold;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 0 22px rgba(233,151,255,.4);
+  transition: transform .2s, box-shadow .2s;
+}
+
+button:active {
+  transform: scale(.95);
+}
+
+/* First page */
+#opening {
+  display: block;
+}
+
+/* Birthday page stays hidden at first */
+#birthday {
+  display: none;
+  animation: appear 1.2s ease;
+}
+
+.subtitle {
+  color: #f0c7ff;
+  letter-spacing: 3px;
+  font-size: 12px;
+}
+
+.message {
+  font-size: 16px;
+  margin: 22px 0;
+}
+
+.footer {
+  margin-top: 25px;
+  color: #cbb5e9;
+  font-size: 12px;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<div class="container">
+  <main class="card">
+
+    <!-- FIRST PAGE: SURPRISE BUTTON ONLY -->
+    <section id="opening">
+      <div class="emoji">💌</div>
+
+      <p class="subtitle">SOMEONE HAS A SURPRISE FOR YOU</p>
+
+      <h1>A Little Surprise<br>For You ✨</h1>
+
+      <p>
+        Hey, Kathzy! 💜<br>
+        I have something special for you.
+        Are you ready?
+      </p>
+
+      <button onclick="openSurprise()">
+        💖 Open to See Surprise
+      </button>
+
+      <p class="footer">A little something made just for you ✨</p>
+    </section>
+
+    <!-- SECOND PAGE: BIRTHDAY GREETING -->
+    <section id="birthday">
+      <div class="emoji">🎂</div>
+
+      <p class="subtitle">TODAY IS YOUR SPECIAL DAY</p>
+
+      <h1>Happy Birthday,<br>Kathzy! 💜</h1>
+
+      <p class="message">
+        🎉 Make a wish, birthday girl! 🎉
+        <br><br>
+        Happy Birthday to you! 🥳💗
+        <br><br>
+        May your special day be filled with
+        happiness, laughter, love, and beautiful
+        memories.
+        <br><br>
+        I hope all your dreams slowly come true
+        and life gives you countless reasons
+        to smile. Never forget how special
+        and wonderful you are.
+        <br><br>
+        You deserve all the good things in life.
+        Keep shining, keep smiling, and enjoy
+        every moment of your special day! 💐
+        <br><br>
+        Happiest Birthday, Kathzy! 🎂✨
+      </p>
+
+      <div class="emoji">🎉💗🎉</div>
+
+      <button onclick="celebrate()">
+        🎆 More Fireworks!
+      </button>
+
+      <p class="footer">Made with 💜 just for Kathzy</p>
+    </section>
+
+  </main>
+</div>
+
+<script>
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+
+let particles = [];
+let animationId = null;
+
+function resizeCanvas() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  canvas.width = window.innerWidth * dpr;
+  canvas.height = window.innerHeight * dpr;
+
+  canvas.style.width = window.innerWidth + "px";
+  canvas.style.height = window.innerHeight + "px";
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+function launchFirework(x, y) {
+  const colors = [
+    "#ff73d2",
+    "#ffd166",
+    "#b794ff",
+    "#8cf7ff",
+    "#ffffff",
+    "#ff91a4"
+  ];
+
+  const color = colors[
+    Math.floor(Math.random() * colors.length)
+  ];
+
+  for (let i = 0; i < 90; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 1 + Math.random() * 5;
+
+    particles.push({
+      x: x,
+      y: y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      life: 90,
+      maxLife: 90,
+      color: color,
+      size: 1.5 + Math.random() * 2.5
+    });
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+  particles = particles.filter(p => p.life > 0);
+
+  particles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+
+    p.vx *= 0.985;
+    p.vy *= 0.985;
+    p.vy += 0.035;
+
+    p.life--;
+
+    ctx.globalAlpha = Math.max(0, p.life / p.maxLife);
+    ctx.fillStyle = p.color;
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  ctx.globalAlpha = 1;
+
+  if (particles.length > 0) {
+    animationId = requestAnimationFrame(animate);
+  } else {
+    animationId = null;
+    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  }
+}
+
+function startAnimation() {
+  if (!animationId) {
+    animationId = requestAnimationFrame(animate);
+  }
+}
+
+function fireworkBurst() {
+  for (let i = 0; i < 7; i++) {
+    setTimeout(() => {
+      launchFirework(
+        window.innerWidth * (0.1 + Math.random() * 0.8),
+        window.innerHeight * (0.1 + Math.random() * 0.5)
+      );
+
+      startAnimation();
+    }, i * 250);
+  }
+}
+
+function openSurprise() {
+  // Hide the first page
+  document.getElementById("opening").style.display = "none";
+
+  // Reveal the birthday greeting
+  document.getElementById("birthday").style.display = "block";
+
+  // Launch fireworks
+  fireworkBurst();
+
+  setTimeout(fireworkBurst, 800);
+  setTimeout(fireworkBurst, 1600);
+
+  // Start the birthday page from the top
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function celebrate() {
+  fireworkBurst();
+  setTimeout(fireworkBurst, 500);
+  setTimeout(fireworkBurst, 1000);
+}
+</script>
+
+</body>
+</html>
